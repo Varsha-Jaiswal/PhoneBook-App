@@ -1,0 +1,98 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>PhoneBook App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="js/bootstrap.js"></script>
+  	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h2>Your Contact Details</h2><br>
+			<form id="ContactForm">
+				<div>
+					<label>Name</label> 
+					<input type="text" class="form-control" id="name" placeholder="Enter your name"><br><br>
+				</div>
+				<div>
+					<label>Mobile Number</label>
+					<input type="number" class="form-control" id="mobile" placeholder="Enter your mobile number"><br><br>
+				</div>
+				<div>
+					<label>Email Address</label>
+					<input type="email" class="form-control" id="email" placeholder="Enter your email address"><br><br>
+				</div>
+				<div>
+					<label>City</label>
+					<input type="text" class="form-control" id="city" placeholder="Enter your city"><br><br>
+				</div>
+			</form>
+			<center>
+				<button class="btn btn-primary" id='button'>Submit</button>
+			</center>
+		</div>
+		<div id="displayContact" class="card"></div>
+		<br><br>
+	</div>
+	<script>
+		document.getElementById('button').addEventListener('click', createContact);
+		function createContact() {
+			var name = document.getElementById('name').value;
+			var mobile = document.getElementById('mobile').value;
+			var email = document.getElementById('email').value;
+			var city = document.getElementById('city').value;
+
+			var contact = {
+				u_name: name,
+				mobile: mobile,
+				email: email,
+				city: city
+			}
+
+			if(localStorage.getItem('contacts') == null) {
+				var contacts = [];
+				contacts.push(contact);
+				localStorage.setItem('contacts', JSON.stringify(contacts));
+			} else {
+				var contacts = JSON.parse(localStorage.getItem('contacts'));
+				contacts.push(contact);
+				localStorage.setItem('contacts', JSON.stringify(contacts));
+			}
+			fetchContacts();
+		}
+		function fetchContacts() {
+			var contacts = JSON.parse(localStorage.getItem('contacts'));
+			document.getElementById('displayContact').innerHTML = '';
+			for (var i = 0; i < contacts.length; i++) {
+				var name = contacts[i].u_name;
+				var email = contacts[i].email;
+				var mobile = contacts[i].mobile;
+				var city = contacts[i].city;
+				document.getElementById('displayContact').innerHTML += '<div class="card-block"><br>'+
+															'<h3 class="card-title">&nbsp;'+name+'&nbsp;&nbsp;&nbsp;'+
+															'<a onclick="deleteContact(\''+mobile+'\')" class="btn btn-danger" href="#">Delete</a>'+
+															'<br><br>'+
+															'<ul class="card-text">'+
+															'<li>'+mobile+'</li><br>'+
+															'<li>'+email+'</li><br>'+
+															'<li>'+city+'</li></ul>'+
+															'<br><br>'+
+															'</h3></div>';
+			}
+		}
+
+		function deleteContact(mobile) {
+			var contacts = JSON.parse(localStorage.getItem('contacts'));
+			for (var i = 0; i < contacts.length; i++) {
+				if(contacts[i].mobile == mobile)
+					contacts.splice(i,1);
+			}
+			localStorage.setItem('contacts', JSON.stringify(contacts));
+			fetchContacts(); 
+		}
+		
+	</script>
+</body>
+</html>
